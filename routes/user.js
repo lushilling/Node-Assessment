@@ -16,37 +16,6 @@ router.get("/test", (req, res) => {
 // @route    POST user/register
 // desc      Add a user
 // @access   PUBLIC
-// router.post("/register", (req, res) => {
-//     const { errors, isValid } = userValidation(req.body);
-//     if (!isValid) {
-//         return res.status(400).json(errors);
-//     };
-//     const user = new User({
-//         username: req.body.username,
-//         email: req.body.email,
-//         password: req.body.password,
-//     });
-//     let repeatPassword = req.body.repeatPassword;
-//     User.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }).then(findUser => {
-//         if (findUser.length != 0) {
-//             if (repeatPassword === user.password) {
-//                 bcrypt.genSalt(10, (err, salt) => {
-//                     bcrypt.hash(user.password, salt, (err, hash) => {
-//                         if (err) throw err;
-//                         user.password = hash;
-//                         user.save()
-//                             .then(() => {
-//                                 res.json(user)
-//                             })
-//                             .catch(err => res.status(404).json(err));
-//                     });
-//                 });
-//             } else res.json("Passwords do not match")
-//         } else { res.json("User already exists") };
-//     }).catch(err => res.status(404).json(err));
-// });
-
-
 router.post("/register", (req, res) => {
     const { errors, isValid } = userValidation(req.body);
     if (!isValid) {
@@ -58,11 +27,11 @@ router.post("/register", (req, res) => {
         password: req.body.password,
     });
     let repeatPassword = req.body.repeatPassword;
+
     User.find({ $or: [{ username: req.body.username }, { email: req.body.email }] }).then(findUser => {
         if (findUser.length != 0) {
-            res.json({ "User already exists" })
-        }
-        else {
+            res.json("User already exists")
+        } else {
             if (repeatPassword === user.password) {
                 bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(user.password, salt, (err, hash) => {
@@ -76,8 +45,8 @@ router.post("/register", (req, res) => {
                     });
                 });
             } else res.json("Passwords do not match")
-        }).catch(err => res.status(404).json(err));
-
+        }
+    }).catch(err => res.status(404).json(err));
 });
 
 // @route   GET user/login
@@ -139,3 +108,44 @@ router.get("/all", (req, res) => {
 });
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+// router.post("/register", (req, res) => {
+//     const { errors, isValid } = userValidation(req.body);
+//     if (!isValid) {
+//         return res.status(400).json(errors);
+//     };
+//     const user = new User({
+//         username: req.body.username,
+//         email: req.body.email,
+//         password: req.body.password,
+//     });
+//     let repeatPassword = req.body.repeatPassword;
+//     User.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }).then(findUser => {
+//         if (findUser.length != 0) {
+//             if (repeatPassword === user.password) {
+//                 bcrypt.genSalt(10, (err, salt) => {
+//                     bcrypt.hash(user.password, salt, (err, hash) => {
+//                         if (err) throw err;
+//                         user.password = hash;
+//                         user.save()
+//                             .then(() => {
+//                                 res.json(user)
+//                             })
+//                             .catch(err => res.status(404).json(err));
+//                     });
+//                 });
+//             } else res.json("Passwords do not match")
+//         } else { res.json("User already exists") };
+//     }).catch(err => res.status(404).json(err));
+// });
