@@ -14,13 +14,11 @@ mongoose.connect(
 
 //User login
 const user = require("./routes/user");
-const login = require("./routes/login");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use("/user", user);
-app.use("/login", login);
 
 const port = process.env.PORT || 5000;
 
