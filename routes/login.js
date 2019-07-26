@@ -5,8 +5,6 @@ const bcrypt = require("bcryptjs");
 // const _=require("lodash");
 // const loginValidation = require("../validator/validator");
 
-
-
 // @route   GET login/test
 // @desc    Tests route
 // @access  Public
@@ -54,7 +52,7 @@ router.post("/create", (req, res) =>{
     });
 });
 
-// @route   DELETE name/deleteUsername
+// @route   DELETE login/deleteUsername
 // @desc    Delete items from one username
 // @access  Public
 router.delete("/delete", (req, res) => {
