@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Login = require("../models/schema");
+const bcrypt = require("bcryptjs");
 // const _=require("lodash");
 // const loginValidation = require("../validator/validator");
-// const bcrypt = require("bcryptjs");
 
-let array = []; //Delete later on
+
 
 // @route   GET login/test
 // @desc    Tests route
@@ -32,35 +32,27 @@ router.get("/all", (req, res) => {
         .catch(err => res.status(404).json({ Message: "There are no users" }));
 });
 
-
-//Add user
-// @route   POST login/create
-// @desc    Create a user
+// @route   POST name/addUser
+// @desc    Add user
 // @access  Public
-router.post("/create", (req, res) => {
-    // const {errors, isValid} = userValidation(req.body);
-    // if (!isValid) {
-    //     return res.status(400).json(errors);
-    // };
+router.post("/create", (req, res) =>{
     const login = new Login({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
     });
-    // bcrypt.genSalt(10, (err, salt) => {
-    //     bcrypt.hash(user.email, salt, (err, hash) =>{
-    //         if (err) throw err;
-    //         user.email = hash;
-    //         user.save()
-    //         .then(() => {
-    //             res.json(user)
-    //         })
-    //         .catch(err => res.status(404).json(err));
-    //     });
-    login.save().then(login => res.json(login))
-    .catch(err => console.log(err));
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(login.password, salt, (err, hash) =>{
+            if (err) throw err;
+            login.password = hash;
+            login.save()
+            .then(() => {
+                res.json(login)
+            })
+            .catch(err => res.status(404).json(err));
+        });
+    });
 });
-
 
 
 module.exports = router;
