@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Login = require("../models/schema");
 const bcrypt = require("bcryptjs");
+const loginValidation = require("../validation/login");
 // const _=require("lodash");
-// const loginValidation = require("../validator/validator");
+
 
 // @route   GET login/test
 // @desc    Tests route
@@ -34,6 +35,10 @@ router.get("/all", (req, res) => {
 // @desc    Add user
 // @access  Public
 router.post("/create", (req, res) =>{
+    const {errors, isValid} = loginValidation(req.body);
+    if (!isValid) {
+        return res.status(400).json(errors);
+    };
     const login = new Login({
         username: req.body.username,
         email: req.body.email,
