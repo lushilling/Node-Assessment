@@ -18,6 +18,12 @@ let UserSchema = new Schema({
         required: true,
         minlength: 5,
         maxlength: 100
+    },
+    repeatPassword: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 100
     }
 });
 

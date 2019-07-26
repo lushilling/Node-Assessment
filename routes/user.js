@@ -3,8 +3,6 @@ const router = express.Router();
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const userValidation = require("../validation/user");
-// const _=require("lodash");
-
 
 // @route   GET user/test
 // @desc    Tests route
@@ -42,7 +40,8 @@ router.post("/create", (req, res) => {
     const user = new User({
         username: req.body.username,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        repeatPassword: req.body.repeatPassword
     });
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(user.password, salt, (err, hash) => {
