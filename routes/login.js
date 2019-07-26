@@ -17,25 +17,27 @@ router.get("/test", (req, res) => {
     });
 });
 
-// @route   GET login/userDetails
+// @route   GET login/userLogin
 // @desc    Get all items from user email and password
 // @access  Public
-router.get("/userDetails", (req, res) => {
-    const {errors, isValid} = loginValidation(req.body);
+router.get("/userLogin", (req, res) => {
+    const { errors, isValid } = loginValidation(req.body);
     if (!isValid) {
         return res.status(400).json(errors);
     };
-    Login.find({'email': req.body.email}, {'password': req.body.password}, '-password')
-      .then(logins => {
-        if (!logins) {
-          errors.noLogins = "Incorrect details";
-          res.status(404).json(errors);
-        }
-        res.json("Login Successful");
-      })
-      .catch(err => res.status(404).json({ Message: "User does not exist" }));
-  });
-  
+    Login.find({ 'email': req.body.email })
+        .then(logins => {
+            bcrypt.compare(req.body.password, login.password)
+                .then(match => {
+                    if (match) {
+                        res.json("Login Successful")
+                    } else {
+                        errorlog.password = "Password incorrect";
+                    }
+                })
+                .catch(err => res.status(404).json(err));
+        }).catch(err => res.status(404).json(err));
+});
 
 // get user details from email and password and return success
 
