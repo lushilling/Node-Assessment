@@ -57,8 +57,8 @@ router.post("/create", (req, res) =>{
     });
 });
 
-// @route   DELETE login/deleteUsername
-// @desc    Delete items from one username
+// @route   DELETE login/delete
+// @desc    Delete items from one user email
 // @access  Public
 router.delete("/delete", (req, res) => {
     User.deleteOne({'email': req.body.email})
@@ -67,5 +67,18 @@ router.delete("/delete", (req, res) => {
     })
       .catch(err => res.status(404).json({ Message: "Can not delete login" }));
   });
+
+// @route   PUT login/update
+// @desc    Update items from one username
+// @access  Public
+router.put("/update", (req, res) => {
+    User.replaceOne({'email': req.body.email},
+    {'username': req.body.username, 'email': req.body.email, 'password': req.body.password})
+    .then(({ok, n}) => {
+        res.json({ noUsers: "updated :)" });
+    })
+    .catch(err => res.status(404).json({ Message: "User can not be updated" }));
+});
+
 
 module.exports = router;
