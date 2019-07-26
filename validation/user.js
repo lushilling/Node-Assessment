@@ -8,6 +8,7 @@ module.exports = function validateUserInput(user) {
     user.username = !isEmpty(user.username) ? user.username : "";
     user.email = !isEmpty(user.email) ? user.email : "";
     user.password = !isEmpty(user.password) ? user.password : "";
+    user.repeatPassword = !isEmpty(user.repeatPassword) ? user.repeatPassword : "";
 
     //username validation rules
     if (Validator.isEmpty(user.username)) {
@@ -38,6 +39,11 @@ module.exports = function validateUserInput(user) {
 
     if (!Validator.isLength(user.password, { min: 5, max: 100 })) {
         errors.password = "Password is invalid";
+    }
+
+    //password validation rules
+    if (Validator.isEmpty(user.repeatPassword)) {
+        errors.repeatPassword = "Password field is required";
     }
 
     return {

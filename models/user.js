@@ -18,7 +18,7 @@ let UserSchema = new Schema({
         required: true,
         minlength: 5,
         maxlength: 100
-    }
+    },
 });
 
 let User = mongoose.model('users', UserSchema);

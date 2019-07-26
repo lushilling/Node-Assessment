@@ -3,8 +3,6 @@ const router = express.Router();
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const userValidation = require("../validation/user");
-// const _=require("lodash");
-
 
 // @route   GET user/test
 // @desc    Tests route
@@ -15,26 +13,10 @@ router.get("/test", (req, res) => {
     });
 });
 
-//@route   GET user/all
-//@desc    Get all usernames
-//@access  Public
-router.get("/all", (req, res) => {
-    const errors = {};
-    User.find({}, '-password')
-        .then(users => {
-            if (!users) {
-                errors.onUsers = "There are no users";
-                res.status((404).json(errors))
-            }
-            res.json(users);
-        })
-        .catch(err => res.status(404).json({ Message: "There are no users" }));
-});
-
-// @route   POST user/create
-// @desc    Add user
-// @access  Public
-router.post("/create", (req, res) => {
+// @route    POST user/register
+// desc      Add a user
+// @access   PUBLIC
+router.post("/register", (req, res) => {
     const { errors, isValid } = userValidation(req.body);
     if (!isValid) {
         return res.status(400).json(errors);
@@ -42,19 +24,42 @@ router.post("/create", (req, res) => {
     const user = new User({
         username: req.body.username,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
     });
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(user.password, salt, (err, hash) => {
-            if (err) throw err;
-            user.password = hash;
-            user.save()
-                .then(() => {
-                    res.json(user)
-                })
-                .catch(err => res.status(404).json(err));
+    let repeatPassword = req.body.repeatPassword;
+
+    if (repeatPassword === user.password) {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                if (err) throw err;
+                user.password = hash;
+                user.save()
+                    .then(() => {
+                        res.json(user)
+                    })
+                    .catch(err => res.status(404).json(err));
+            });
         });
-    });
+    } else res.json("Passwords do not match")
+});
+
+// @route   GET user/login
+// @desc    Get all items from user email and password
+// @access  Public
+router.get("/login", (req, res) => {
+    let errorlog = {};
+    User.findOne({ email: req.body.email }).then(user => {
+        bcrypt.compare(req.body.password, user.password).then(isMatch => {
+            if (isMatch) {
+                console.log(user);
+                res.json("Login Successful")
+            } else {
+                errorlog.password = "Password Incorrect";
+                return res.status(400).json(errorlog);
+            }
+        })
+            .catch(err => res.status(404).json(err));
+    }).catch(err => res.status(404).json(err));
 });
 
 // @route   DELETE user/delete
@@ -80,23 +85,20 @@ router.put("/update", (req, res) => {
         .catch(err => res.status(404).json({ Message: "User can not be updated" }));
 });
 
-// @route   GET user/login
-// @desc    Get all items from user email and password
-// @access  Public
-router.get("/login", (req, res) => {
-    let errorlog = {};
-    User.findOne({ email: req.body.email }).then(user => {
-        bcrypt.compare(req.body.password, user.password).then(isMatch => {
-            if (isMatch) {
-                console.log(user);
-                res.json("Login Successful")
-            } else {
-                errorlog.password = "Password Incorrect";
-                return res.status(400).json(errorlog);
+//@route   GET user/all
+//@desc    Get all usernames
+//@access  Public
+router.get("/all", (req, res) => {
+    const errors = {};
+    User.find({}, '-password')
+        .then(users => {
+            if (!users) {
+                errors.onUsers = "There are no users";
+                res.status((404).json(errors))
             }
+            res.json(users);
         })
-            .catch(err => res.status(404).json(err));
-    }).catch(err => res.status(404).json(err));
+        .catch(err => res.status(404).json({ Message: "There are no users" }));
 });
 
 module.exports = router;
