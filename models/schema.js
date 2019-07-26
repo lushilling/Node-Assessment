@@ -14,9 +14,10 @@ let LoginSchema = new Schema({
         maxlength: 320
     },
     password: {
-        typr: String,
+        type: String,
         required: true,
-        minlength: 5
+        minlength: 5,
+        maxlength: 100
     }
 });
 
