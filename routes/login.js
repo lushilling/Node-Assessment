@@ -54,5 +54,15 @@ router.post("/create", (req, res) =>{
     });
 });
 
+// @route   DELETE name/deleteUsername
+// @desc    Delete items from one username
+// @access  Public
+router.delete("/delete", (req, res) => {
+    Login.deleteOne({'email': req.body.email})
+    .then(({ok, n}) => {
+        res.json({ Login: "Deleted :)" });
+    })
+      .catch(err => res.status(404).json({ Message: "Can not delete login" }));
+  });
 
 module.exports = router;
