@@ -41,7 +41,6 @@ router.post("/create", (req, res) => {
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
-        repeatPassword: req.body.repeatPassword
     });
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(user.password, salt, (err, hash) => {
@@ -55,6 +54,37 @@ router.post("/create", (req, res) => {
         });
     });
 });
+
+// @route    POST user/register
+// desc      Add a user
+// @access   PUBLIC
+router.post("/register", (req, res) => {
+    const { errors, isValid } = userValidation(req.body);
+    if (!isValid) {
+        return res.status(400).json(errors);
+    };
+    const user = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+    });
+    let repeatPassword = req.body.repeatPassword;
+
+    if (repeatPassword === user.password) {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                if (err) throw err;
+                user.password = hash;
+                user.save()
+                    .then(() => {
+                        res.json(user)
+                    })
+                    .catch(err => res.status(404).json(err));
+            });
+        });
+    } else res.json("Passwords do not match")
+});
+
 
 // @route   DELETE user/delete
 // @desc    Delete items from one user email

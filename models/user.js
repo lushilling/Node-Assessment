@@ -19,12 +19,6 @@ let UserSchema = new Schema({
         minlength: 5,
         maxlength: 100
     },
-    repeatPassword: {
-        type: String,
-        required: true,
-        minlength: 5,
-        maxlength: 100
-    }
 });
 
 let User = mongoose.model('users', UserSchema);

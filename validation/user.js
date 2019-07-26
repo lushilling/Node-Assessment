@@ -46,10 +46,6 @@ module.exports = function validateUserInput(user) {
         errors.repeatPassword = "Password field is required";
     }
 
-    if (!Validator.isLength(user.repeatPassword, { min: 5, max: 100 })) {
-        errors.repeatPassword = "Password is invalid";
-    }
-
     return {
         errors,
         isValid: isEmpty(errors)
